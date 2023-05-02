@@ -1,0 +1,106 @@
+#include <iostream>
+#include <string>
+using namespace std;
+class Recenica
+{
+private:
+    string *znaci;
+    int broj;
+
+public:
+    Recenica()
+    {
+        broj = 2;
+        znaci = new string[broj];
+        znaci[0] = "Zdarvo";
+        znaci[1] = "!";
+    }
+    Recenica(int br, string *zn)
+    {
+        broj = br;
+        znaci = new string[broj];
+        for (int i = 0; i < broj; i++)
+        {
+            znaci[i] = zn[i];
+        }
+    }
+    Recenica(Recenica &rec)
+    {
+        broj = rec.broj;
+        znaci = new string[rec.broj];
+        for (int i = 0; i < broj; i++)
+        {
+            znaci[i] = rec.znaci[i];
+        }
+    }
+    ~Recenica()
+    {
+        delete[] znaci;
+    }
+    void dodadiElement(string m)
+    {
+        string *nova = new string[broj+1];
+        broj++;
+        for (int i = 0; i < broj - 1; i++)
+        {
+            nova[i] = znaci[i];
+        }
+        delete[] znaci;
+        nova[broj - 1] = m;
+        znaci = nova;
+    }
+    
+    void brisiElement(int poz)
+    {
+         if (poz < 0 || poz >= broj)
+    {
+        cout << "Nevalidna pozicija" << endl;
+        return;
+    }
+    string *novabrisi = new string[broj - 1];
+    for (int i = 0; i < poz; i++)
+    {
+        novabrisi[i] = znaci[i];
+    }
+    for (int i = poz + 1; i < broj; i++)
+    {
+        novabrisi[i - 1] = znaci[i];
+    }
+    delete[] znaci;
+    znaci = novabrisi;
+    broj--;
+    }
+    
+    void pecati()
+    {
+        for (int i = 0; i < broj; i++)
+        {
+            cout << znaci[i] << " ";
+        }
+    }
+};
+int main()
+{
+    int broj_znaci;
+    int brisi;
+    string r1[6];
+    r1[0] = "Mnogu";
+    r1[1] = "sakam";
+    r1[2] = "da";
+    r1[3] = "ucam";
+    r1[4] = "PSP";
+    r1[5] = "!";
+    cout << "Vnesete broj na znaci" << endl;
+    cin >> broj_znaci;
+    Recenica rec1(broj_znaci, r1);
+    rec1.pecati();
+    cout<<endl;
+    rec1.dodadiElement("vo");
+    rec1.dodadiElement("Sabota");
+    rec1.pecati();
+    cout<<endl;
+    cout << "Na koja poziciaja da brisam??" << endl;
+    cin >> brisi;
+    rec1.brisiElement(brisi);
+    rec1.pecati();
+}
