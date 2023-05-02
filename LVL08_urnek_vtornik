@@ -132,6 +132,8 @@ public:
     void pechati()
     {
         cout << "fakultet so najmnogu predmeti koi nosat 6 krediti: " << najmnogu_So_6_krediti().getime() << endl;
+        cout<<"Ime na Univerzitet<<imeUni<<endl;
+        cout<<"Broj na fakulteti<<broj_fakulteti<<endl;
     }
 };
 int main()
