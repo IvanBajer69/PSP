@@ -1,0 +1,155 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+class Fakultet
+{
+private:
+    int broj_predmeti;
+    string imeFakultet;
+    int *krediti;
+
+public:
+    Fakultet(string ime = "", int brPredmeti = 0, int *k = NULL)
+    {
+        imeFakultet = ime;
+        if (brPredmeti >= 0)
+        {
+            broj_predmeti = brPredmeti;
+        }
+        else
+        {
+            broj_predmeti = 0;
+        }
+        krediti = new int[broj_predmeti];
+        if (k == NULL)
+        {
+            for (int i = 0; i < broj_predmeti; i++)
+            {
+                krediti[i] = 0;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < broj_predmeti; i++)
+            {
+                krediti[i] = k[i];
+            }
+        }
+    }
+    Fakultet(const Fakultet &faks)
+    {
+        broj_predmeti = faks.broj_predmeti;
+        imeFakultet = faks.imeFakultet;
+        krediti = new int[broj_predmeti];
+        for (int i = 0; i < broj_predmeti; i++)
+        {
+            krediti[i] = faks.krediti[i];
+        }
+    }
+    ~Fakultet()
+    {
+        delete[] krediti;
+    }
+    int broj_standardni_krediti()
+    {
+        int br = 0;
+        for (int i = 0; i < broj_predmeti; i++)
+        {
+            if (krediti[i] == 6)
+            {
+                br++;
+            }
+        }
+        return br;
+    }
+    void pecati()
+    {
+        cout << "Ime na fakultet: " << imeFakultet << endl;
+        cout << "Broj na predmeti: " << broj_predmeti << " , od koi " << broj_standardni_krediti() << " se so po 6 krediti! " << endl;
+        // for (int i = 0; i < broj_predmeti; i++)
+        // {
+        //     cout << "Kredit: " << krediti[i] << endl;
+        // }
+    }
+    string getime()
+    {
+        return imeFakultet;
+    }
+};
+class Univerzitet
+{
+private:
+    string imeUni;
+    Fakultet *fakulteti;
+    int broj_fakulteti;
+
+public:
+    Univerzitet(string ime = "", int br = 0, Fakultet *niza = NULL)
+    {
+        imeUni = ime;
+        if (br >= 0)
+        {
+            broj_fakulteti = br;
+        }
+        else
+        {
+            broj_fakulteti = 0;
+        }
+        fakulteti = new Fakultet[broj_fakulteti];
+        for (int i = 0; i < broj_fakulteti; i++)
+        {
+            fakulteti[i] = niza[i];
+        }
+    }
+    Univerzitet(Univerzitet &uni)
+    {
+        imeUni = uni.imeUni;
+        broj_fakulteti = uni.broj_fakulteti;
+        for (int i = 0; i < broj_fakulteti; i++)
+        {
+            fakulteti[i] = uni.fakulteti[i];
+        }
+    }
+    ~Univerzitet()
+    {
+        delete[] fakulteti;
+        fakulteti = nullptr;
+    }
+    Fakultet najmnogu_So_6_krediti()
+    {
+        int max = 0;
+        int index = 0;
+        for (int i = 0; i < broj_fakulteti; i++)
+        {
+            if (fakulteti[i].broj_standardni_krediti() > max)
+            {
+                max = fakulteti[i].broj_standardni_krediti();
+                index = i;
+            }
+        }
+        return fakulteti[index];
+    }
+    void pechati()
+    {
+        cout << "fakultet so najmnogu predmeti koi nosat 6 krediti: " << najmnogu_So_6_krediti().getime() << endl;
+    }
+};
+int main()
+{
+    string s1 = "FETI";
+    int predmeti1 = 6;
+    int krediti1[6] = {6, 5, 2, 1, 6, 6};
+    Fakultet f1(s1, predmeti1, krediti1);
+    string s2 = "MFS";
+    int predmeti2 = 3;
+    int krediti2[3] = {3, 6, 1};
+    Fakultet f2(s2, predmeti2, krediti2);
+    f1.pecati();
+    f2.pecati();
+    string s3 = "UKIM";
+    int brFaks = 2;
+    Fakultet lista[2] = {f1, f2};
+    Univerzitet uni(s3, brFaks, lista);
+    uni.pechati();
+    return 0;
+}
