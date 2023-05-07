@@ -1,0 +1,105 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+class Recenica
+{
+private:
+    string *zborovi;
+    int broj_zborovi;
+
+public:
+    Recenica()
+    {
+        broj_zborovi = 1;
+        zborovi = new string[1];
+        zborovi[0] = "default";
+    }
+    Recenica(string *zb, int brzbr)
+    {
+        broj_zborovi = brzbr;
+        zborovi = new string[broj_zborovi];
+        for (int i = 0; i < broj_zborovi; i++)
+        {
+            zborovi[i] = zb[i];
+        }
+    }
+    ~Recenica()
+    {
+        delete[] zborovi;
+    }
+    friend ostream &operator<<(ostream &COUT, Recenica &recenica)
+    {
+        for (int i = 0; i < recenica.broj_zborovi; i++)
+        {
+            COUT << recenica.zborovi[i] << " ";
+        }
+        return COUT;
+    }
+    Recenica &operator=(const Recenica &recenica)
+    {
+        if (this != &recenica)
+        {
+            delete[] zborovi;
+            broj_zborovi = recenica.broj_zborovi;
+            zborovi = new string[broj_zborovi];
+            for (int i = 0; i < broj_zborovi; i++)
+            {
+                zborovi[i] = recenica.zborovi[i];
+            }
+        }
+        return *this;
+    }
+    bool operator>(const Recenica &recenica)
+    {
+        return broj_zborovi > recenica.broj_zborovi;
+    }
+    Recenica &operator-=(string zbor)
+    {
+        string *pom = new string[broj_zborovi];
+        pom[0] = zbor;
+        for (int i = 1; i < broj_zborovi; i++)
+        {
+            pom[i + 1] = zborovi[i];
+        }
+        delete[] zborovi;
+        zborovi = pom;
+        broj_zborovi++;
+        return *this;
+    }
+    Recenica& operator--()
+    {
+        if (broj_zborovi > 0)
+        string *pom=new string[broj_zborovi-1];
+        for(int i=0;i<broj_zborovi-1;i++)
+        {
+            pom[i]=zborovi[i];
+        }
+        delete[]zborovi;
+        zborovi=pom;
+        broj_zborovi--;
+        return *this;
+
+    }
+    Recenica operator[](int index)
+    {
+        return zborovi[index];
+    }
+};
+int main()
+{
+    string zborovi[6] = {"sakam", "da", "polozam", "psp", "vo", "juni"};
+    Recenica r1 = Recenica();
+    Recenica r2 = Recenica(zborovi, 6);
+    Recenica r3;
+    r3 = r2;
+    cout << r2;
+    cout << r3;
+    r2 -= "Jas";
+    cout << r2;
+    --r2;
+    cout << r2;
+    cout << r2 > r1;
+    r1[0] = "Nov";
+    cout << r2[0];
+    return 0;
+}
