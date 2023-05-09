@@ -15,108 +15,126 @@
 // Напомена: Класата треба да се грижи за мемориско оптимизирање на низата (преку грижа за
 // динамичката алокација при секоја операција)!
 
-#include <iostream>
-#include <string.h>
+#include<iostream>
+#include<string.h>
 using namespace std;
 class Recenica
 {
-private:
-    string *zborovi;
-    int broj_zborovi;
-
-public:
+    private:
+    int counter;
+    string *lista;
+    public:
+    Recenica(int c ,string *l)
+    {
+        if(c>=1)
+        {
+            counter=c;
+        }
+        else
+        {
+            counter=1;
+            l[0]="default";
+        }
+        lista=new string[counter];
+        for(int i=0;i<counter;i++)
+        {
+            lista[i]=l[i];
+        }
+    }
     Recenica()
     {
-        broj_zborovi = 1;
-        zborovi = new string[1];
-        zborovi[0] = "default";
-    }
-    Recenica(string *zb, int brzbr)
-    {
-        broj_zborovi = brzbr;
-        zborovi = new string[broj_zborovi];
-        for (int i = 0; i < broj_zborovi; i++)
-        {
-            zborovi[i] = zb[i];
-        }
+        counter=1;
+        lista=new string[counter];
+        lista[0]="default";
     }
     ~Recenica()
     {
-        delete[] zborovi;
+        delete []lista;
+        lista=nullptr;
     }
-    friend ostream &operator<<(ostream &COUT, Recenica &recenica)
+    Recenica &operator=(const Recenica &r)
     {
-        for (int i = 0; i < recenica.broj_zborovi; i++)
+        counter=r.counter;
+        lista=new string[counter];
+        for(int i=0;i<counter;i++)
         {
-            COUT << recenica.zborovi[i] << " ";
+            lista[i]=r.lista[i];
+        }
+        return *this;
+    }
+   friend bool operator>(const Recenica &r,const Recenica r2)
+    {
+           if(r.counter>r2.counter)
+           {
+               return true;
+           }
+        else
+        {
+            return false;
+        }
+     }
+    Recenica &operator-=(string zbor)
+    {
+        string *pom=new string[counter+1];
+        for(int i=counter;i>0;i--)
+        {
+            pom[i]=lista[i-1];
+        }
+        pom[0]=zbor;
+        delete []lista;
+        lista=pom;
+        return *this;
+    }
+    Recenica &operator++()
+    {
+        string *pom=new string[counter-1];
+        for(int i=0;i<counter;i++)
+        {
+            pom[i]=lista[i];
+        }
+        for(int i=0;i<counter-1;i++)
+        {
+            pom[i+1]=lista[i];
+        }
+        delete[]lista;
+        pom[counter-1];
+        lista=pom;
+    }
+   string &operator[](int poz)
+    {
+        for(int i=0;i<counter;i++)
+        {
+            if(i==poz)
+            {
+                return lista[i];
+            }
+        }
+    }
+    friend ostream &operator<<(ostream &COUT,Recenica &r)
+    {
+        for(int i=0;i<r.counter;i++)
+        {
+            cout<<r.lista[i]<<" ";
         }
         return COUT;
     }
-    Recenica &operator=(const Recenica &recenica)
-    {
-        if (this != &recenica)
-        {
-            delete[] zborovi;
-            broj_zborovi = recenica.broj_zborovi;
-            zborovi = new string[broj_zborovi];
-            for (int i = 0; i < broj_zborovi; i++)
-            {
-                zborovi[i] = recenica.zborovi[i];
-            }
-        }
-        return *this;
-    }
-    bool operator>(const Recenica &recenica)
-    {
-        return broj_zborovi > recenica.broj_zborovi;
-    }
-    Recenica &operator-=(string zbor)
-    {
-        string *pom = new string[broj_zborovi];
-        pom[0] = zbor;
-        for (int i = 1; i < broj_zborovi; i++)
-        {
-            pom[i + 1] = zborovi[i];
-        }
-        delete[] zborovi;
-        zborovi = pom;
-        broj_zborovi++;
-        return *this;
-    }
-    Recenica& operator--()
-    {
-        if (broj_zborovi > 0)
-        string *pom=new string[broj_zborovi-1];
-        for(int i=0;i<broj_zborovi-1;i++)
-        {
-            pom[i]=zborovi[i];
-        }
-        delete[]zborovi;
-        zborovi=pom;
-        broj_zborovi--;
-        return *this;
-
-    }
-    Recenica operator[](int index)
-    {
-        return zborovi[index];
-    }
+    
 };
 int main()
 {
-    string zborovi[6] = {"sakam", "da", "polozam", "psp", "vo", "juni"};
-    Recenica r1 = Recenica();
-    Recenica r2 = Recenica(zborovi, 6);
-    Recenica r3;
-    r3 = r2;
-    cout << r2;
-    cout << r3;
-    r2 -= "Jas";
-    cout << r2;
-    --r2;
-    cout << r2;
-    cout << r2 > r1;
-    r1[0] = "Nov";
-    cout << r2[0];
-    return 0;
+string zborovi[6]={"sakam","da","polozam","psp","vo","juni"};
+//Recenica r1=Recenica();
+Recenica r2=Recenica(6,zborovi);
+Recenica r3;
+ r3=r2;
+ cout<<r2<<endl;
+ cout<<r3<<endl;
+ r2-="Jas";
+ cout<<r2<<endl;
+//  -=r2;
+//  cout<<r2;
+//  cout<<r2;
+// // r1[0]="Nov";
+//  cout<<r2[0];
+return 0;
 }
