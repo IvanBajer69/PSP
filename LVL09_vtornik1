@@ -1,0 +1,144 @@
+#include <iostream>
+#include <cstring>
+#include <string.h>
+using namespace std;
+class Destinacii
+{
+public:
+    string grad;
+    int prestoj;
+    Destinacii(string g = "", int p = 0)
+    {
+        grad = g;
+        if (p >= 0)
+        {
+            prestoj = p;
+        }
+        else
+        {
+            prestoj = 0;
+        }
+    }
+
+};
+class Turi
+{
+private:
+    string ime_patuvanje;
+    int cena;
+    int broj_destinacii;
+    Destinacii *list;
+
+public:
+    Turi(string imep = "", int c = 0, int brd = 0, Destinacii *niza = NULL)
+    {
+        ime_patuvanje = imep;
+        if (c >= 0)
+        {
+            cena = c;
+        }
+        else
+        {
+            cena = 0;
+        }
+        if (brd >= 0)
+        {
+            broj_destinacii = brd;
+        }
+        else
+        {
+            broj_destinacii = 0;
+        }
+        list = new Destinacii[broj_destinacii];
+        for (int i = 0; i < broj_destinacii; i++)
+        {
+            list[i] = niza[i];
+        }
+    }
+    ~Turi()
+    {
+        delete[] list;
+    }
+    Turi &operator+=(Destinacii &p)
+    {
+        Destinacii *pom = new Destinacii[broj_destinacii + 1];
+        
+        pom[0] = p;
+        for (int i = 0; i <broj_destinacii; i++)
+        {
+            pom[i+1] = list[i];
+        }
+        delete[] list;
+        broj_destinacii++;
+        list = pom;
+        return *this;
+    }
+    Turi &operator-=(Destinacii &k)
+    {
+        Destinacii *pom = new Destinacii[broj_destinacii + 1];
+        broj_destinacii++;
+        for (int i = 0; i < broj_destinacii - 1; i++)
+        {
+            pom[i] = list[i];
+        }
+        delete[] list;
+        pom[broj_destinacii-1] = k;
+        
+        list = pom;
+        return *this;
+    }
+    Turi &operator++()
+    {
+        Destinacii *pom = new Destinacii[broj_destinacii - 1];
+        broj_destinacii--;
+        for (int i = 0; i < broj_destinacii; i++)
+        {
+            pom[i] = list[i];
+        }
+        delete[] list;
+        list = pom;
+        return *this;
+    }
+    Turi &operator--()
+    {
+        Destinacii *pom = new Destinacii[broj_destinacii - 1];
+        broj_destinacii--;
+        for (int i = 0; i < broj_destinacii; i++)
+        {
+            pom[i] = list[i + 1];
+        }
+        delete[] list;
+        list = pom;
+        return *this;
+    }
+    friend ostream &operator<<(ostream &out, Turi &pe)
+    {
+        out << "Ime na patuvanje: " << pe.ime_patuvanje << endl;
+        out << "Cena na patuvanje: " << pe.cena << endl;
+        out << "Broj na destinacii:" << pe.broj_destinacii << endl;
+        for (int i = 0; i < pe.broj_destinacii; i++)
+        {
+            out << "Ime na grad:" << pe.list[i].grad << ", presotjuvanje: " << pe.list[i].prestoj << endl;
+        }
+        return out;
+    }
+};
+int main()
+{
+    Destinacii desinacija1("Skopje", 3);
+    Destinacii desinacija2("Rim", 7);
+    Destinacii desinacija3("Viena", 7);
+    Destinacii desinacija4("Bitola", 2);
+    Destinacii desinacija5("AUSVIC", 9);
+    Destinacii lista[3] = {desinacija1, desinacija2, desinacija3};
+    Turi t1("Makedonija", 3000, 3, lista);
+    cout << t1 << endl;
+    t1+=desinacija4;
+    t1-=desinacija5;
+    cout<<t1<<endl;
+    ++t1;
+    cout<<t1<<endl;
+    --t1;
+    cout<<t1<<endl;
+    return 0;
+}
