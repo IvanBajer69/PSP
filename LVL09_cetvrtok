@@ -1,0 +1,184 @@
+#include <iostream>
+#include <string>
+using namespace std;
+struct Tips
+{
+    string domakin;
+    string gostin;
+    int tip;
+    float koeficient;
+};
+class Livce
+{
+private:
+    Tips *niza;
+    int vneseni_tipuvanja;
+
+public:
+    Livce(Tips *list = NULL, int vt = 0)
+    {
+        if (vt >= 0)
+        {
+            vneseni_tipuvanja = vt;
+        }
+        else
+        {
+            vneseni_tipuvanja = 0;
+        }
+        niza = new Tips[vneseni_tipuvanja];
+        for (int i = 0; i < vneseni_tipuvanja; i++)
+        {
+            niza[i] = list[i];
+        }
+    }
+    ~Livce()
+    {
+        delete[] niza;
+    }
+    friend istream &operator>>(istream &in, Livce &p)
+    {
+        cout << "Vnesete broj na tipuvanja: " << endl;
+        in >> p.vneseni_tipuvanja;
+        cout << endl;
+        p.niza = new Tips[p.vneseni_tipuvanja];
+        for (int i = 0; i < p.vneseni_tipuvanja; i++)
+        {
+            cout << "Vnesi go imeto na domakjinot: " << i + 1 << endl;
+            in >> p.niza[i].domakin;
+            cout << endl;
+            cout << "Vnesi go imeto na gostinot: " << i + 1 << endl;
+            in >> p.niza[i].gostin;
+            cout << endl;
+            cout << "Vnesi go tipot (0, 1, 2):";
+            in >> p.niza[i].tip;
+            cout << endl;
+            cout << "Vnesi koeficient za natprevarot:" << endl;
+            in >> p.niza[i].koeficient;
+        }
+        return in;
+    }
+    friend ostream &operator<<(ostream &out, Livce &p)
+    {
+        out << "Napisavte: " << p.vneseni_tipuvanja << " natprevari" << endl;
+        out << "Tie se:" << endl;
+        for (int i = 0; i < p.vneseni_tipuvanja; i++)
+        {
+            out << p.niza[i].domakin << " - " << p.niza[i].gostin << endl;
+        }
+        return out;
+    }
+    // Livce &operator=(const Livce &l)
+    // {
+    //     if (this == l)
+    //     {
+    //         return *this;
+    //     }
+    //     vneseni_tipuvanja = l.vneseni_tipuvanja;
+    //     delte[] niza;
+    //     niza = new Tips[l.vneseni_tipuvanja];
+    //     for (int i = 0; i < l.vneseni_tipuvanja; i++)
+    //     {
+    //         niza[i] = l.niza[i];
+    //     }
+    //     return *this;
+    // }
+    friend bool operator>(const Livce &l1, const Livce &l2)
+    {
+        float koef = 1.0;
+        float koef2 = 1.0;
+        for (int i = 0; i < l1.vneseni_tipuvanja; i++)
+        {
+            koef *= l1.niza[i].koeficient;
+        }
+        for (int i = 0; i < l2.vneseni_tipuvanja; i++)
+        {
+            koef2 *= l2.niza[i].koeficient;
+        }
+        if (koef > koef2)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    Livce &operator+=(Tips &l)
+    {
+        Tips *pom = new Tips[vneseni_tipuvanja + 1];
+        for (int i = 0; i < vneseni_tipuvanja; i++)
+        {
+            pom[i].domakin = niza[i].domakin;
+            pom[i].gostin = niza[i].gostin;
+            pom[i].tip = niza[i].tip;
+            pom[i].koeficient = niza[i].koeficient;
+           
+        }
+        delete[] niza;
+        pom[vneseni_tipuvanja].domakin = l.domakin;
+        pom[vneseni_tipuvanja].gostin = l.gostin;
+        pom[vneseni_tipuvanja].tip = l.tip;
+        pom[vneseni_tipuvanja].koeficient = l.koeficient;
+        vneseni_tipuvanja++;
+        niza = new Tips[vneseni_tipuvanja];
+        for(int i = 0; i < vneseni_tipuvanja; i++){
+
+            niza[i].domakin = pom[i].domakin;
+            niza[i].gostin = pom[i].gostin;
+            niza[i].koeficient = pom[i].koeficient;
+            niza[i].tip = pom[i].tip;
+
+        }
+        delete[]pom;
+    
+        return *this;
+    }
+    Livce &operator--()
+    {
+        Tips *pom = new Tips[vneseni_tipuvanja - 1];
+        for (int i = 0; i < vneseni_tipuvanja - 1; i++)
+        {
+            pom[i] = niza[i];
+        }
+        delete[] niza;
+        vneseni_tipuvanja--;
+        niza = pom;
+        return *this;
+    }
+};
+int main()
+{
+    Livce l1;
+    cout << "Vnesi podatoci za livceto 1:" << endl;
+    cin >> l1;
+    Livce l2;
+    cout << "Vnesi podatoci za livceto 2:" << endl;
+    cin >> l2;
+    cout << l1 << endl;
+    cout << l2 << endl;
+    if (l1 > l2)
+    {
+        cout << "Livceto 1 ima pogolem koef!" << endl;
+    }
+    else
+    {
+        cout << "Livceto 2 ima pogolem koef" << endl;
+    }
+    cout << endl;
+    --l1;
+    cout << endl;
+    Tips t;
+    cout << "Vnesete podatoci za natprevarot: " << endl;
+    cout << "Vnesete ime na domakjin" << endl;
+    cin >> t.domakin;
+    cout << "Vnesete ime na gostin: " << endl;
+    cin >> t.gostin;
+    cout << "Vnesi go tipot (0, 1, 2): " << endl;
+    cin >> t.tip;
+    cout << "Vnesi go koefecientot za natprevarot: " << endl;
+    cin >> t.koeficient;
+    cout << endl;
+    l1 += t;
+    cout << l1;
+    return 0;
+}
