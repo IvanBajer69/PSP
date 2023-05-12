@@ -1,0 +1,99 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+class Izvidnik
+{
+private:
+    string ime;
+    string prezime;
+    int godiniIsk;
+
+public:
+    Izvidnik(string i = " ", string p = " ", int god = 0)
+    {
+        ime = i;
+        prezime = p;
+        godiniIsk = god;
+    }
+    void pechati()
+    {
+        cout << "Ime: " << ime << ", prezime: " << prezime << ", godini rabotno iskustvo: " << godiniIsk << endl;
+    }
+    int get_godini_iskustvo()
+    {
+        return godiniIsk;
+    }
+};
+class IzvidnickoDrustvo
+{
+private:
+    string ime;
+    string oblast;
+    int broj_izvidnici;
+    Izvidnik **izvidnici;
+
+public:
+    IzvidnickoDrustvo(string im = " ", string obl = " ", int brIz = 0)
+    {
+        ime = im;
+        oblast = obl;
+        if (brIz > 0)
+        {
+            broj_izvidnici = brIz;
+        }
+        else
+        {
+            broj_izvidnici = 0;
+        }
+        izvidnici = new Izvidnik *[broj_izvidnici];
+    }
+    ~IzvidnickoDrustvo()
+    {
+        for (int i = 0; i < broj_izvidnici; i++)
+        {
+            delete izvidnici[i];
+        }
+        delete[] izvidnici;
+    }
+    void dodadi_izvidnik(Izvidnik *i, int pozicija)
+    {
+        izvidnici[pozicija] = i;
+    }
+    int max_godini_iskustvo()
+    {
+        int max_godini = -1;
+        for (int i = 0; i < broj_izvidnici; i++)
+        {
+            if (izvidnici[i]->get_godini_iskustvo() > max_godini)
+            {
+                max_godini = izvidnici[i]->get_godini_iskustvo();
+            }
+        }
+        return max_godini;
+    }
+    void pecati()
+    {
+        cout << "Ime na izvidnicko drustvo: " << ime << endl;
+        cout << "Oblast: " << oblast << ednl;
+        cout << "Broj na izvdinici: " << broj_izvidnici << endl;
+        cout << "Izvdinici: " << endl;
+        for (int i = 0; i < broj_izvidnici; i++)
+        {
+            izvidnici[i]->pechati();
+        }
+    }
+};
+int main()
+{
+    Izvidnik *i1 = new Izvidnik("Pero", "Petkovski", 3);
+    Izvidnik *i2 = new Izvidnik("Ivan", "Bajer", 5);
+    Izvidnik *i3 = new Izvidnik("Pero", "Antic", 1);
+    IzvidnickoDrustvo *id = new IzvidnickoDrustvo("NOVI SAD", "Planina", 3);
+    id->dodadi_izvidnik(i1, 0);
+    id->dodadi_izvidnik(i2, 1);
+    id->dodadi_izvidnik(i3, 2);
+    id->pecati();
+cout << "Najvisoko iskustvo: " << id->max_godini_iskustvo() << " godini" << endl;
+delete id;
+return 0;
+}
