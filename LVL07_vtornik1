@@ -1,0 +1,118 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+class velosipedist
+{
+private:
+    string ime;
+    string prezime;
+    int godini;
+    int poeni;
+
+public:
+    velosipedist(string i = "", string p = "", int god = 0, int poen = 0)
+    {
+        ime = i;
+        prezime = p;
+        if (god > 0)
+        {
+            godini = god;
+        }
+        else
+        {
+            godini = 0;
+        }
+        if (poen > 0)
+        {
+            poeni = poen;
+        }
+        else
+        {
+            poeni = 0;
+        }
+    }
+    int getpoeni()
+    {
+        return poeni;
+    }
+    void pechati()
+    {
+        cout << "Velosipedistot " << ime << " " << prezime << " ima osvoeno " << poeni << endl;
+    }
+};
+class tim
+{
+private:
+    string imeTim;
+    string sponzor;
+    int brVelo;
+    velosipedist lista[10];
+
+public:
+    tim(string i = "", string sp = " ", int br = 0, velosipedist *niza = NULL)
+    {
+        imeTim = i;
+        sponzor = sp;
+        if (br > 0)
+        {
+            brVelo = br;
+        }
+        else
+        {
+            brVelo = 0;
+        }
+        for (int i = 0; i < brVelo; i++)
+        {
+            lista[i] = niza[i];
+        }
+    }
+    int poeni_tim()
+    {
+        float vkupno;
+        for (int i = 0; i < brVelo; i++)
+        {
+            vkupno += lista[i].getpoeni();
+        }
+        return vkupno;
+    }
+    void pecati()
+    {
+        cout << "Timot se vika: " << imeTim << endl;
+        cout << "Sponzor e: " << sponzor << endl;
+        cout << "Ima " << brVelo << " broj na velosipedisti" << endl;
+        for (int i = 0; i < brVelo; i++)
+        {
+            lista[i].pechati();
+        }
+    }
+};
+int main()
+{
+    string itim, spos;
+    int brvelos;
+    cout << "Vnesi ime na tim" << endl;
+    cin >> itim;
+    cout << "Vnesi ime na sponzor" << endl;
+    cin >> spos;
+    cout << "Vnesi broj na velosipedisti ima timot" << endl;
+    cin >> brvelos;
+    velosipedist lis[10];
+    for (int i = 0; i < brvelos; i++)
+    {
+        string imV;
+        string prV;
+        int go;
+        int pr;
+        cout << "Vnesi ime i prezime na velosipedist" << endl;
+        cin >> imV >> prV;
+        cout << "Vnesi kolku godini ima" << endl;
+        cin >> go;
+        cout << "Vnesi kolku poeni ima:" << endl;
+        cin >> pr;
+        lis[i] = velosipedist(imV, prV, go, pr);
+    }
+    tim velostim(itim, spos, brvelos, lis);
+    velostim.pecati();
+    cout << "Vkupno poeni ima timot" << velostim.poeni_tim() << endl;
+    return 0;
+}
