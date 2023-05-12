@@ -1,0 +1,123 @@
+#include <iostream>
+#include <string>
+using namespace std;
+class kosarkar
+{
+public:
+ string ime;
+int osnovnaPlata;
+    kosarkar()
+    {
+        ime = " ";
+        osnovnaPlata = 30000;
+    }
+    kosarkar(string i, int o)
+    {
+        ime = i;
+        if (o > 0)
+        {
+            osnovnaPlata = o;
+        }
+        else
+        {
+            osnovnaPlata = 0;
+        }
+    }
+    ~kosarkar()
+    {
+    };
+    void pecati()
+    {
+        cout << "Ime" << ime << endl;
+        cout << "Osnovna plata" << osnovnaPlata << endl;
+    }
+    int BonusPlata(float prosek)
+    {
+        int bonus=50*prosek;
+        return osnovnaPlata+bonus;
+    }
+};
+class ekipa
+{
+    public:
+    string ime;
+    int brojNaKosarkari;
+    float prosekPoeni;
+    kosarkar nizaKosarkari[8];
+    ekipa()
+    {
+        ime=" ";
+        brojNaKosarkari=0;
+        prosekPoeni=0;
+    }
+    ekipa(string i, int b, float p, kosarkar nk[])
+    {
+        ime=i;
+        brojNaKosarkari=b;
+        prosekPoeni=p;
+        if(brojNaKosarkari>0 && brojNaKosarkari<=8)
+        {
+            brojNaKosarkari=b;
+        }
+        else
+        {
+            brojNaKosarkari=0;
+        }
+        if(prosekPoeni>0)
+        {
+            prosekPoeni=p;
+        }
+        else
+        {
+            prosekPoeni=0;
+        }
+        for(int j=0;j<brojNaKosarkari;j++)
+        {
+            nizaKosarkari[j]=nk[j];
+        }
+    }
+    ~ekipa()
+    {
+    };
+    void pecati()
+    {
+        cout<<"Ime na ekipa:\n"<<ime<<endl;
+        cout<<"Broj na Kosarkari\n"<<brojNaKosarkari<<endl;
+        cout<<"Prosek na Poeni\n"<<prosekPoeni<<endl;
+        for (int i=0;i<brojNaKosarkari;i++)
+        {
+            cout<<"Kosarkar"<<i+1<<":"<<endl;
+            nizaKosarkari[i].pecati();
+            int plata=nizaKosarkari[i].BonusPlata(prosekPoeni);
+            cout<<"Plata"<<plata<<endl;
+        }
+    }
+};
+int main()
+{
+    kosarkar kosarkari[8];
+    string imeEkipa;
+    float prosekPoeni;
+    int brKos;
+    cout<<"Kolku kosarkari sakate da vnesete?"<<endl;
+    cin>>brKos;
+    for(int i=0;i<brKos;i++)
+    {
+        string ime;
+        int plata;
+        cout<<"Vnesete ime na kosarkar"<<endl;
+        cin>>ime;
+        cout<<"Vnesete osnovna plata"<<endl;
+        cin>>plata;
+        kosarkari[i]=kosarkar(ime,plata);
+    }
+    cout<<"Vnesete ime na ekipata"<<endl;
+    cin>>imeEkipa;
+    cout<<"Vnsete prosek na poeni po natprevar"<<endl;
+    cin>>prosekPoeni;
+    cout<<"Broj na kosarkari"<<endl;
+    cin>>brKos;
+    ekipa e(imeEkipa,brKos,prosekPoeni,kosarkari);
+    e.pecati();
+    return 0; 
+}
