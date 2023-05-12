@@ -1,0 +1,177 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+class Ucenik
+{
+private:
+    char *ime;
+    float prosek;
+    int skolska_godina;
+
+public:
+    Ucenik()
+    {
+        ime = new char[1];
+        strcpy(ime, "");
+        prosek = 0.0;
+        skolska_godina = 0;
+    }
+    Ucenik(char *i, float p, int skg)
+    {
+        ime = new char[strlen(i) + 1];
+        if (p >= 0.0)
+        {
+            prosek = p;
+        }
+        else
+        {
+            prosek = 0.0;
+        }
+        if (skg >= 0)
+        {
+            skolska_godina = skg;
+        }
+        else
+        {
+            skolska_godina = 0;
+        }
+    }
+    Ucenik(const Ucenik &uc)
+    {
+        ime = uc.ime;
+        prosek = uc.prosek;
+        skolska_godina = uc.skolska_godina;
+    }
+    ~Ucenik()
+    {
+        delete[] ime;
+    }
+    char *getime()
+    {
+        return ime;
+    }
+    float getProsek()
+    {
+        return prosek;
+    }
+    int getBrojGod()
+    {
+        return skolska_godina;
+    }
+    void setIme(char *i)
+    {
+        delete[] ime;
+        ime = new char[strlen(i) + 1];
+        strcpy(ime, i);
+    }
+    void setProsek(float p)
+    {
+        prosek = p;
+    }
+    void setBrojGod(int skg)
+    {
+        skolska_godina = skg;
+    }
+    // • Оператор = за изедначување на два ученици
+    Ucenik &operator=(Ucenik &u)
+    {
+        setIme(u.ime);
+        prosek = u.prosek;
+        skolska_godina = u.skolska_godina;
+        return *this;
+    }
+    // Оператор ++ за зголемување на запишаната школска година за еден.
+    Ucenik &operator++()
+    {
+        skolska_godina++;
+        return *this;
+    }
+    // Оператор << за печатење на ученик со сите негови податоци.
+    friend ostream &operator<<(ostream &COUT, Ucenik &uc)
+    {
+        COUT << "Ime:\n " << uc.ime << "Prosek: " << uc.prosek << "\nSkolska godina: " << uc.skolska_godina;
+        return COUT;
+    }
+};
+class Paralelka
+{
+private:
+    Ucenik *klas;
+    int broj;
+
+public:
+    Paralelka(Ucenik *kl = NULL, int br = 0)
+    {
+        broj = br;
+        klas = new Ucenik[broj];
+        for (int i = 0; i < broj; i++)
+        {
+            klas[i] = kl[i];
+        }
+    }
+    Paralelka(const Paralelka &p)
+    {
+        broj = p.broj;
+        klas = new Ucenik[broj];
+        for (int i = 0; i < broj; i++)
+        {
+            klas[i] = p.klas[i];
+        }
+    }
+    ~Paralelka()
+    {
+        delete[] klas;
+    }
+    // • Оператор ++ за зголемување на запишаната школска година за еден за сите ученици во полето.
+    Paralelka &operator++()
+    {
+        for (int i = 0; i < broj; i++)
+        {
+            ++klas[i];
+        }
+        return *this;
+    }
+    // • Оператор += за додавање на еден ученик во полето од ученици
+    Paralelka &operator+=(Ucenik &u)
+    {
+        Ucenik *pom;
+        pom = new Ucenik[broj + 1];
+        broj += 1;
+        for (int i = 0; i < broj - 1; i++)
+        {
+            pom[i] = klas[i];
+        }
+        pom[broj - 1] = u;
+        delete[] klas;
+        klas = pom;
+        return *this;
+    }
+    // Оператор << за печатење на сите ученици во класата
+    friend ostream &operator<<(ostream &COUT, Paralelka &p)
+    {
+        COUT << "Klasot ima " << p.broj << " na ucenici: " << endl;
+        for (int i = 0; i < p.broj; i++)
+        {
+            COUT << p.klas[i] << endl;
+        }
+        return COUT;
+    }
+};
+int main()
+{
+    Ucenik u[4] = {Ucenik(), Ucenik("Prv", 5.0, 2012), Ucenik("Vtor", 4.5, 2012),
+                   Ucenik("Tret", 5.0, 2011)};
+    cout << u[1]; /* оператор << од класата Uchenik */
+    u[1] = u[2];  /* оператор = од класата Uchenik */
+    /* се повикува функцијата u[1].operator=(u[2]) */
+    cout << u[1]; /* оператор << од класата Uchenik */
+    Paralelka p = Paralelka(u, 4);
+    cout << p; /* оператор << од класата Paralelka */
+    Ucenik nov = Ucenik("Nov", 5.0, 2012);
+    p += nov; /* оператор += од класата Paralelka */
+    /* се повикува функцијата p.operator+=(nov) */
+    cout << p; /* оператор << од класата Paralelka */
+    ++p;       /* оператор ++ од класата Paralelka */
+    cout << p;
+}
