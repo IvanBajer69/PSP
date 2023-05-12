@@ -1,0 +1,135 @@
+#include <iostream>
+#include <string>
+using namespace std;
+class Restoran
+{
+public:
+    string ime_restoran;
+    int broj_vraboteni;
+    Restoran(string i = "", int brv=0)
+    {
+        ime_restoran = i;
+        if (brv >= 0)
+        {
+            broj_vraboteni = brv;
+        }
+        else
+        {
+            broj_vraboteni = 0;
+        }
+    }
+};
+class Lanec
+{
+private:
+    string ime_lanec;
+    string lokacija;
+    int broj_restorani;
+    Restoran *lista;
+public:
+    Lanec(string il = "", string l = "", int brr = 0, Restoran *ll = NULL)
+    {
+        ime_lanec = il;
+        lokacija = l;
+        if (brr >= 0)
+        {
+            broj_restorani = brr;
+        }
+        else
+        {
+            broj_restorani = 0;
+        }
+        lista = new Restoran[broj_restorani];
+        for (int i = 0; i < broj_restorani; i++)
+        {
+            lista[i] = ll[i];
+        }
+    }
+    ~Lanec()
+    {
+        delete[] lista;
+    }
+    Lanec &operator+=(Restoran &r)
+    {
+        Restoran *pom = new Restoran[broj_restorani + 1];
+        broj_restorani++;
+        for (int i = 0; i < broj_restorani - 1; i++)
+        {
+            pom[i] = lista[i];
+        }
+        delete[] lista;
+        pom[broj_restorani - 1] = r;
+        lista = pom;
+        return *this;
+    }
+    Lanec &operator-=(Restoran &k)
+    {
+        Restoran *pom = new Restoran[broj_restorani + 1];
+        pom[0] = k;
+        for (int i = 0; i < broj_restorani; i++)
+        {
+            pom[i + 1] = lista[i];
+        }
+        delete[] lista;
+        broj_restorani++;
+        lista = pom;
+        return *this;
+    }
+    Lanec &operator++()
+    {
+        Restoran *pom = new Restoran[broj_restorani - 1];
+        broj_restorani--;
+        for (int i = 0; i < broj_restorani; i++)
+        {
+            pom[i] = lista[i + 1];
+        }
+        delete[] lista;
+        lista = pom;
+        return *this;
+    }
+    Lanec &operator--()
+    {
+        Restoran *pom = new Restoran[broj_restorani - 1];
+        broj_restorani--;
+        for (int i = 0; i < broj_restorani; i++)
+        {
+            pom[i] = lista[i];
+        }
+        delete[] lista;
+        lista = pom;
+        return *this;
+    }
+    friend ostream &operator<<(ostream &out, Lanec &p)
+    {
+        out << "Ime na lanec: " << p.ime_lanec << endl;
+        out << "Lokacija: " << p.lokacija << endl;
+        out << "Broj na restorani: " << p.broj_restorani << endl;
+        for (int i = 0; i < p.broj_restorani; i++)
+        {
+            out << "Ime na resotran: " << p.lista[i].ime_restoran;
+            out << ", so broj na vraboteni: " << p.lista[i].broj_vraboteni << endl;
+        }
+        return out;
+    }
+};
+int main()
+{
+    Restoran res1("Burger King", 3);
+    Restoran res2("Gamza Doner", 5);
+    Restoran res3("Madzo 2.0", 20);
+    Restoran res4("TOST", 1);
+    Restoran res5("NJAM NJAM", 4);
+     Restoran res6("Mini Pani", 8);
+    Restoran list[3] = {res1, res2, res3};
+    Lanec l1("Skopje", "Partizanska", 3, list);
+    cout << l1 << endl;
+    
+    l1+=res5;
+    l1-=res6;
+    cout<<l1<<endl;
+    ++l1;
+    cout<<l1<<endl;
+    --l1;
+    cout<<l1<<endl;
+    return 0;
+}
