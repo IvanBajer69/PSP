@@ -1,0 +1,138 @@
+#include <iostream>
+#include <string>
+using namespace std;
+class Sostojki
+{
+public:
+    string ime_sostojka;
+    int tezina;
+    Sostojki(string im = "", int tez = 0)
+    {
+        ime_sostojka = im;
+        tezina = tez;
+    }
+    string getIme()
+    {
+        return ime_sostojka;
+    }
+    int getTezina()
+    {
+        return tezina;
+    }
+};
+class Pica
+{
+private:
+    string ime_pica;
+    Sostojki *niza;
+    int broj_sostojki;
+    int cena;
+
+public:
+    Pica()
+    {
+
+        ime_pica = "Margarita";
+        cena = 360;
+        broj_sostojki = 4;
+        niza = new Sostojki[broj_sostojki];
+        niza[0] = Sostojki("Sos od domati", 100);
+        niza[1] = Sostojki("Maslinki", 100);
+        niza[2] = Sostojki("Kaskaval", 100);
+        niza[3] = Sostojki("Origano", 20);
+    }
+    Pica(string i, int br, int c, Sostojki *n)
+    {
+        ime_pica = i;
+        if (br >= 0)
+        {
+            broj_sostojki = br;
+        }
+        else
+        {
+            broj_sostojki = 0;
+        }
+        if (c >= 0)
+        {
+            cena = c;
+        }
+        else
+        {
+            cena = 0;
+        }
+        niza = new Sostojki[broj_sostojki];
+        for (int i = 0; i < broj_sostojki; i++)
+        {
+            niza[i] = n[i];
+        }
+    }
+    Pica(const Pica &t)
+    {
+        ime_pica = t.ime_pica;
+        broj_sostojki = t.broj_sostojki;
+        cena = t.cena;
+        niza = new Sostojki[t.broj_sostojki];
+        for (int i = 0; i < t.broj_sostojki; i++)
+        {
+            niza[i] = t.niza[i];
+        }
+    }
+    ~Pica()
+    {
+        delete[] niza;
+    }
+    void pecati()
+    {
+        cout << "Ime na pica: " << ime_pica << endl;
+        cout << "Cena: " << cena << endl;
+        cout << "sostojki:" << endl;
+        for (int i = 0; i < broj_sostojki; i++)
+        {
+            cout << "-" << niza[i].ime_sostojka << " (" << niza[i].tezina << " grama)" << endl;
+        }
+    }
+    void dodadiSostojka(string m)
+    {
+        Sostojki *pom = new Sostojki[broj_sostojki + 1];
+        broj_sostojki++;
+        for (int i = 0; i < broj_sostojki - 1; i++)
+        {
+            pom[i] = niza[i];
+        }
+        delete[] niza;
+        pom[broj_sostojki - 1] = m;
+        niza = pom;
+    }
+    void brisiSostojka(int poz)
+    {
+        Sostojki *pom = new Sostojki[broj_sostojki - 1];
+        for (int i = 0; i < broj_sostojki; i++)
+        {
+            if (i != poz)
+            {
+                pom[i] = niza[i];
+            }
+        }
+        delete[] niza;
+        niza = pom;
+        broj_sostojki--;
+    }
+};
+int main()
+{
+    Sostojki lista[3];
+    lista[0].ime_sostojka = "Kaskaval";
+    lista[0].tezina = 100;
+    lista[1].ime_sostojka = "Salama";
+    lista[1].tezina = 100;
+    lista[2].ime_sostojka = "Kecap";
+    lista[2].tezina = 100;
+    string imePica;
+    int cena;
+    cena = 450;
+    imePica = "Capri";
+    Pica l1(imePica, 3, cena, lista);
+
+    l1.pecati();
+    return 0;
+}
