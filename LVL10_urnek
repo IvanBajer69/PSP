@@ -1,0 +1,188 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+using namespace std;
+
+class Prostor
+{
+protected:
+    char *lokacija;
+    float kvadratura;
+    int osnovna_cena;
+
+public:
+    Prostor(char *l = nullptr, float kv = 0.0, int c = 0)
+    {
+        lokacija = new char[strlen(l) + 1];
+        
+        strcpy(lokacija, l);
+        if (kv >= 0.0)
+        {
+            kvadratura = kv;
+        }
+        else
+        {
+            kvadratura = 0.0;
+        }
+        if (c >= 0)
+        {
+            osnovna_cena = c;
+        }
+        else
+        {
+            osnovna_cena = 0;
+        }
+    }
+
+    Prostor(Prostor &p)
+    {
+       lokacija = new char[strlen(p.lokacija) + 1];
+        strcpy(lokacija, p.lokacija);
+        kvadratura = p.kvadratura;
+        osnovna_cena = p.osnovna_cena;
+    }
+
+    ~Prostor()
+    {
+        delete[] lokacija;
+    }
+
+    Prostor &operator=(const Prostor &d)
+    {
+        if (this != &d)
+        {
+            kvadratura = d.kvadratura;
+            osnovna_cena = d.osnovna_cena;
+            delete[] lokacija;
+           lokacija = new char[strlen(d.lokacija) + 1];
+        }
+        return *this;
+    }
+
+    virtual void presmetaj_cena() = 0;
+
+    virtual void pecati()
+    {
+        cout << "Lokacija: " << lokacija << endl;
+        cout << "Kvadratura: " << kvadratura << "m^2" << endl;
+        cout << "Cena po kvadrat: " << osnovna_cena << endl;
+    }
+};
+
+class StanbenProstor : public Prostor
+{
+private:
+    int parking;
+
+public:
+    StanbenProstor(char *l = nullptr, float kv = 0.0, int c = 0, int par = 0) : Prostor(l, kv, c)
+    {
+        if (par >= 0)
+        {
+            parking = par;
+        }
+        else
+        {
+            parking = 0;
+        }
+    }
+
+    void presmetaj_cena() override
+    {
+        float vkupnaCena = kvadratura * osnovna_cena;
+        vkupnaCena += parking * 5000;
+        cout << "Cena na stanben prostor: " << vkupnaCena << endl;
+    }
+
+    void pecati() override
+    {
+        Prostor::pecati();
+        cout << "Broj na parking mesta: " << parking << endl;
+    }
+};
+
+class MaloprodazenProstor : public Prostor
+{
+private:
+    int brendovi;
+
+public:
+    MaloprodazenProstor(char *l = nullptr, float kv = 0.0, int c = 0, int bre = 0) : Prostor(l, kv,c)
+    {
+        if (bre >= 0)
+        {
+            brendovi = bre;
+        }
+        else
+        {
+            brendovi = 0;
+        }
+    }
+    void presmetaj_cena() override
+    {
+        float fullCena = kvadratura * osnovna_cena;
+        float popust = brendovi * 0.1;
+        fullCena -= fullCena * popust;
+        cout << "Vkupnata cena za maloprodazen prostor e: " << fullCena << endl;
+    }
+
+    void pecati() override
+    {
+        Prostor::pecati();
+        cout << "Broj na brendovi: " << brendovi << endl;
+    }
+};
+
+// Prostor *najeftinProstor(Prostor **prostori, int brojProstori)
+// {
+//     if (brojProstori == 0)
+//     {
+//         return nullptr;
+//     }
+//     Prostor *najeftinProstor = prostori[0];
+//     float minCena;
+//     najeftinProstor->presmetaj_cena();
+//     minCena = najeftinProstor->presmetaj_cena();
+
+//     for (int i = 1; i < brojProstori; i++)
+//     {
+//         float cena = prostori[i]->presmetaj_cena();
+//         if (cena < minCena)
+//         {
+//             minCena = cena;
+//             najeftinProstor = prostori[i];
+//         }
+//     }
+
+//     return najeftinProstor;
+// }
+
+int main()
+{
+    Prostor* prostori[3];
+
+    StanbenProstor stanbenProstor("Skopje", 100.0, 2000, 2);
+    prostori[0] = &stanbenProstor;
+
+    MaloprodazenProstor maloprodazenProstor("Bitola", 150.0, 3000, 3);
+    prostori[1] = &maloprodazenProstor;
+
+    MaloprodazenProstor maloprodazenProstor2("Ohrid", 200.0, 2500, 2);
+    prostori[2] = &maloprodazenProstor2;
+
+    for (int i = 0; i < 3; i++)
+    {
+        prostori[i]->pecati();
+        prostori[i]->presmetaj_cena();
+        cout << endl;
+    }
+
+    // Prostor* najjeftin = najeftinProstor(prostori, 3);
+    // if (najjeftin != nullptr)
+    // {
+    //     cout << "Najeftin prostor: " << endl;
+    //     najjeftin->pecati();
+    // }
+
+    return 0;
+}
