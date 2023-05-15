@@ -14,7 +14,7 @@ public:
     Prostor(char *l = nullptr, float kv = 0.0, int c = 0)
     {
         lokacija = new char[strlen(l) + 1];
-        
+
         strcpy(lokacija, l);
         if (kv >= 0.0)
         {
@@ -36,7 +36,7 @@ public:
 
     Prostor(Prostor &p)
     {
-       lokacija = new char[strlen(p.lokacija) + 1];
+        lokacija = new char[strlen(p.lokacija) + 1];
         strcpy(lokacija, p.lokacija);
         kvadratura = p.kvadratura;
         osnovna_cena = p.osnovna_cena;
@@ -54,7 +54,7 @@ public:
             kvadratura = d.kvadratura;
             osnovna_cena = d.osnovna_cena;
             delete[] lokacija;
-           lokacija = new char[strlen(d.lokacija) + 1];
+            lokacija = new char[strlen(d.lokacija) + 1];
         }
         return *this;
     }
@@ -66,6 +66,10 @@ public:
         cout << "Lokacija: " << lokacija << endl;
         cout << "Kvadratura: " << kvadratura << "m^2" << endl;
         cout << "Cena po kvadrat: " << osnovna_cena << endl;
+    }
+    float getCena()
+    {
+        return osnovna_cena;
     }
 };
 
@@ -107,7 +111,7 @@ private:
     int brendovi;
 
 public:
-    MaloprodazenProstor(char *l = nullptr, float kv = 0.0, int c = 0, int bre = 0) : Prostor(l, kv,c)
+    MaloprodazenProstor(char *l = nullptr, float kv = 0.0, int c = 0, int bre = 0) : Prostor(l, kv, c)
     {
         if (bre >= 0)
         {
@@ -133,33 +137,31 @@ public:
     }
 };
 
-// Prostor *najeftinProstor(Prostor **prostori, int brojProstori)
-// {
-//     if (brojProstori == 0)
-//     {
-//         return nullptr;
-//     }
-//     Prostor *najeftinProstor = prostori[0];
-//     float minCena;
-//     najeftinProstor->presmetaj_cena();
-//     minCena = najeftinProstor->presmetaj_cena();
+void najefinProstor(Prostor *lista[], int N)
+{
 
-//     for (int i = 1; i < brojProstori; i++)
-//     {
-//         float cena = prostori[i]->presmetaj_cena();
-//         if (cena < minCena)
-//         {
-//             minCena = cena;
-//             najeftinProstor = prostori[i];
-//         }
-//     }
+    if (N == 0)
+    {
+        cout << "Nema dostapni prostori." << endl;
+        exit(-1);
+    }
 
-//     return najeftinProstor;
-// }
+    Prostor *min = lista[0];
+
+    for (int i = 1; i < N; i++)
+    {
+        if (lista[i]->getCena() < min->getCena())
+        {
+            min = lista[i];
+        }
+    }
+
+    min->pecati();
+}
 
 int main()
 {
-    Prostor* prostori[3];
+    Prostor *prostori[3];
 
     StanbenProstor stanbenProstor("Skopje", 100.0, 2000, 2);
     prostori[0] = &stanbenProstor;
@@ -176,13 +178,9 @@ int main()
         prostori[i]->presmetaj_cena();
         cout << endl;
     }
-
-    // Prostor* najjeftin = najeftinProstor(prostori, 3);
-    // if (najjeftin != nullptr)
-    // {
-    //     cout << "Najeftin prostor: " << endl;
-    //     najjeftin->pecati();
-    // }
+    int N = 6;
+    Prostor *lista[]={&stanbenProstor, &maloprodazenProstor, &maloprodazenProstor2};
+    najefinProstor(lista, N);
 
     return 0;
 }
