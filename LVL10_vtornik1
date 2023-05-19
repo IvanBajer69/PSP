@@ -1,0 +1,202 @@
+#include <iostream>
+#include <string.h>
+#include <cmath>
+using namespace std;
+enum tip {umetnicki, strucni};
+class Polica
+{
+private:
+    char kod[50];
+    int starost;
+
+public:
+    Polica(char *niza="", int star = 0)
+    {
+        strncpy(kod, niza, 49); // pamti za char
+        kod[49] = 0;           // pamti za char
+        if (star >= 0)
+        {
+            starost = star;
+        }
+        else
+        {
+            starost = 0;
+        }
+    }
+    virtual float vrednost()
+    {
+        float cena = 6000;
+        cena *= pow(0.93, starost);
+        return cena;
+    }
+    virtual void pechati()
+    {
+        cout << "Kod:" << kod << endl;
+        cout << "starost" << starost << endl;
+        cout << "Vrednost na policata" << vrednost() << endl;
+    }
+};
+class Kniga : public Polica
+{
+private:
+    tip book;
+    int broj_knigi;
+    string *naslovi;
+
+public:
+    Kniga(char *niza = "", int star = 0, tip t = umetnicki, int brk = 0, string *nizaa=NULL) : Polica(niza, star)
+    {
+        book = t;
+        if (brk >= 0)
+        {
+            broj_knigi = brk;
+        }
+        else
+        {
+            broj_knigi = 0;
+        }
+        naslovi = new string[broj_knigi];
+        for (int i = 0; i < broj_knigi; i++)
+        {
+            naslovi[i] = nizaa[i];
+        }
+    }
+    ~Kniga()
+    {
+        delete[] naslovi;
+    }
+    float vrednost()
+    {
+        float vred = Polica::vrednost();
+        if (book == strucni)
+        {
+            vred += (vred * 0.2);
+        }
+        for (int i = 0; i < broj_knigi; i++)
+        {
+            string naslov = naslovi[i];
+            if (naslov[0] == 'A' || naslov[0] == 'E', naslov[0] == 'I', naslov[0] == 'O', naslov[0] == 'U', naslov[0] == 'a' || naslov[0] == 'e', naslov[0] == 'i', naslov[0] == 'o', naslov[0] == 'u')
+            {
+                return vred += 200.0;
+            }
+            else
+            {
+                vred += 300.0;
+            }
+        }
+    }
+   void pechati()
+    {
+        Polica::pechati();
+        cout << "Tip na kniga" << book << endl;
+        cout << "Broj na knigi<<" << broj_knigi << endl;
+        cout << "Naslovite na knigite se:" << endl;
+        for (int i = 0; i < broj_knigi; i++)
+        {
+            cout << naslovi[i] << endl;
+        }
+    }
+};
+class Alati : public Polica
+{
+private:
+    int broj_alati;
+    int *cena_alat;
+
+public:
+    Alati(char *niza = "", int star = 0, int broja = 0, int *cea = NULL) : Polica(niza, star)
+    {
+        if (broja >= 0)
+        {
+            broj_alati = broja;
+        }
+        else
+        {
+            broj_alati = 0;
+        }
+        cena_alat = new int[broj_alati];
+        for (int i = 0; i < broj_alati; i++)
+        {
+            cena_alat[i] = cea[i];
+        }
+    }
+    ~Alati()
+    {
+        delete[] cena_alat;
+    }
+    float vrednost()
+    {
+        float vredn = Polica::vrednost();
+        for (int i = 0; i < broj_alati; i++)
+        {
+            vredn += cena_alat[i];
+        }
+        return vredn;
+    }
+    void pechati()
+    {
+        Polica::pechati();
+        cout << "Broj na alatite se:" << broj_alati << endl;
+        cout << "Cena na alatite: " << endl;
+        for (int i = 0; i < broj_alati; i++)
+        {
+            cout << cena_alat[i] << "denari" << endl;
+        }
+    }
+};
+void najvredna(Polica **niza, int broj)
+{
+    Polica *max = niza[0];
+    for (int i = 0; i < broj; i++)
+    {
+        if (niza[i]->vrednost() > max->vrednost())
+        {
+            max = niza[i];
+        }
+    }
+    cout << "Najvredna polica e:"  << endl;
+    max->pechati();
+}
+float vkVrednost(Polica **niza, int broj)
+{
+    float vkupno = 0.0;
+    for (int i = 0; i < broj; i++)
+    {
+        vkupno += niza[i]->vrednost();
+    }
+    cout << "Vkupnata vrednost na policite e: " << vkupno << endl;
+    return vkupno;
+}
+int main()
+{
+    Polica *E[4];
+
+    string Naslovi1[3] = {"Programiranje i algoritmi", "Osnovi na elektrotehnika", "Fizika 1"};
+    string Naslovi2[4] = {"Kako se kaleshe chelikot", "Kasni i porasni", "Papokot na svetot", "Ana Karenina"};
+    Kniga M1("A1Z1", 1, umetnicki,3,Naslovi1);
+
+    
+    Kniga M2("A2Z1", 2, strucni, 4,Naslovi2);
+
+    int ceni[2] = {500, 5000};
+
+    Alati V1("A1Z2", 10, 2, ceni);
+
+    E[0] = &M1;
+    E[1] = &M2;
+    E[2] = &V1;
+    M1.pechati();
+    cout << endl;
+
+    M2.pechati();
+    cout << endl;
+
+    V1.pechati();
+    cout << endl;
+
+    najvredna(E, 3);
+    cout << endl;
+
+     vkVrednost(E, 3);
+    return 0;
+}
