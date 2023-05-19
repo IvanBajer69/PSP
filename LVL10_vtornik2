@@ -1,0 +1,152 @@
+// tezina*potrosuvackaNa100km 
+// za vagonite da e dinamicka niza
+#include <iostream>
+#include <string>
+using namespace std;
+class PrevozniSredstva
+{
+protected:
+    float tezina;
+    float potrosuvacka;
+public:
+    PrevozniSredstva(float tez=0.0,float pot=0.0)
+    {
+        if(tez>=0.0)
+        {
+            tezina=tez;
+        }
+        else
+        {
+            tezina=0.0;
+        }
+        if(pot>=0.0)
+        {
+            potrosuvacka=pot;
+        }
+        else
+        {
+            potrosuvacka=0.0;
+        }
+    }
+    ~PrevozniSredstva(){}
+    virtual float presmetajPotrosuvacka()
+    {
+        return tezina*potrosuvacka;
+    }
+    virtual void pecati()
+    {
+        cout<<"Tezina na vozilo: "<<tezina<<endl;
+        cout<<"Osnovna potrosuvacka e: "<<potrosuvacka<<endl;
+    }
+};
+class Avion:public PrevozniSredstva
+{
+protected:
+    bool mlazen;
+public:
+    Avion(float tez=0.0,float pot=0.0,bool ml=false):PrevozniSredstva(tez,pot)
+    {
+        mlazen=ml;
+    }
+    float presmetajPotrosuvacka()
+    {
+        
+        return PrevozniSredstva::presmetajPotrosuvacka()+mlazen*30/100*PrevozniSredstva::presmetajPotrosuvacka();
+    }
+    void pecati()
+    {
+        PrevozniSredstva::pecati();
+        cout<<"Avionot ima: "<<mlazen<<endl;
+        cout<<"Nova Potrosuvacka: "<<potrosuvacka<<endl;
+    }
+};
+class Voz:public PrevozniSredstva
+{
+protected:
+    int *vagoni;
+    int broj_vagoni;
+public:
+    Voz(float tez=0.0,float pot=0.0,int *vag=NULL,int br=0):PrevozniSredstva(tez,pot)
+    {
+        if(br>=0)
+        {
+            broj_vagoni=br;
+        }
+        else
+        {
+            broj_vagoni=0;
+        }
+        vagoni=new int[broj_vagoni];
+        for(int i=0;i<broj_vagoni;i++)
+        {
+            vagoni[i]=vag[i];
+        }
+
+    }
+    ~Voz()
+    {
+        delete[]vagoni;
+    }
+    
+        float presmetajPotrosuvacka()
+    {
+        float pom=0.0;
+        for(int i=0;i<broj_vagoni;i++)
+        {
+            pom+=vagoni[i];
+        }
+        return pom*potrosuvacka;
+    }
+    void pecati()
+    {
+        PrevozniSredstva::pecati();
+        cout<<"Broj na vagoni:"<<broj_vagoni<<endl;
+        // vagoni=new int[broj_vagoni];
+        for(int i=0;i<broj_vagoni;i++)
+        {
+            cout<<"Tezina na vagonite: "<<vagoni[i]<<endl;
+        }
+        cout<<"novata potrosuvacka e :"<<presmetajPotrosuvacka()<<endl;
+    }
+
+};
+bool pomalaPotrosuvacka(PrevozniSredstva *p1, PrevozniSredstva *p2)
+{
+    if(p1->presmetajPotrosuvacka()<p2->presmetajPotrosuvacka())
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+int najmalaPotrosuvacka(PrevozniSredstva **k)
+{
+    int min=k[0]->presmetajPotrosuvacka();
+    int i=0;
+    int poz;
+    while(k[i]!=NULL)
+    {
+        if(k[i]->presmetajPotrosuvacka())
+        {
+            min=k[i]->presmetajPotrosuvacka();
+            poz=i;
+        }
+        i++;
+    }
+    return poz;
+}
+int main(){
+PrevozniSredstva *E[5];
+Avion G1(3000, 0.01, true);
+Avion G2(2000, 0.015, false);
+int vagoni1[10] = {2000, 4000, 4000, 3000};
+Voz K1(10000, 0.001, vagoni1, 4);
+int vagoni2[10] = {4000, 8000, 8000, 10000,3000, 3000};
+Voz K2(8000, 0.0009, vagoni2, 6);
+E[0] = &G1; E[1] = &G2; E[2] = &K1; E[3]=&K2; E[4] = NULL;
+cout<<(pomalaPotrosuvacka(E[0],E[1])?"Prvoto prevozno sretstvo":"Vtoroto prevozno sretstvo")<<" troshi pomalku"<<endl;
+E[najmalaPotrosuvacka(E)]->pecati();
+return 0;
+}
