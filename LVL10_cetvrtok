@@ -1,0 +1,207 @@
+#include <iostream>
+#include <string.h>
+
+using namespace std;
+class Kujna
+{
+protected:
+    string ime;
+    bool materijal;
+    float trosok;
+    int mesec;
+
+public:
+    Kujna(string i = "", bool m = false, float tros = 0.0, int mes = 0)
+    {
+        ime = i;
+        materijal = m;
+        if (tros >= 0.0)
+        {
+            trosok = tros;
+        }
+        else
+        {
+            trosok = 0.0;
+        }
+        if (mes >= 0)
+        {
+            mesec = mes;
+        }
+        else
+        {
+            mesec = 0;
+        }
+    }
+    virtual float presmetajCena()
+    {
+        float cena=0.0;
+        if(materijal)
+        {
+            cena=4000.0;
+        }
+        else
+        {
+            cena=2000.0;
+        }
+    }
+    virtual void pechati()
+    {
+        cout << "Ime na kompanija: " << ime << endl;
+        cout << "Materijal: " << materijal << endl;
+        cout << "Mesecen trosok za cuvanje: " << trosok << endl;
+        cout << "Meseci: " << mesec << endl;
+        cout << "Vkupna cena: " << presmetajCena() << endl;
+    }
+};
+class Masi : public Kujna
+{
+protected:
+    float metri;
+    int fioki;
+    float *zafatnina;
+
+public:
+    Masi(string i = "", bool m = false, float tros = 0.0, int mes = 0, float met = 0.0, float *z = NULL,int f = 0) : Kujna(i, m, tros, mes)
+    {
+        if (met >= 0)
+        {
+            metri = met;
+        }
+        else
+        {
+            metri = 0.0;
+        }
+        if (f >= 0)
+        {
+            fioki = f;
+        }
+        else
+        {
+            fioki = 0;
+        }
+        zafatnina = new float[fioki];
+        for (int i = 0; i < fioki; i++)
+        {
+            zafatnina[i] = z[i];
+        }
+    }
+    ~Masi()
+    {
+        delete[] zafatnina;
+    }
+    float presmetajCena()
+    {
+        float cena = 0.0;
+        if (materijal)
+        {
+            cena = 4000.0;
+        }
+        else
+        {
+            cena = 2000.0;
+        }
+        cena += metri * 0.25;
+        for (int i = 0; i < fioki; i++)
+        {
+            cena += zafatnina[i] * 0.2;
+        }
+        cena += trosok * mesec;
+        return cena;
+    }
+    void pechati()
+    {
+        Kujna::pechati();
+        cout << "Metri kvadratni:" << metri << endl;
+        cout << "Fioki:" << fioki << endl;
+        cout << "Zafatnina:" << endl;
+        for (int i = 0; i < fioki; i++)
+        {
+            cout << zafatnina[i] << endl;
+        }
+    }
+};
+class Visacki : public Kujna
+{
+protected:
+    int vraticki;
+    int polici;
+
+public:
+    Visacki(string i = "", bool m = false, float tros = 0.0, int mes = 0, int vrat = 0, int poli = 0) : Kujna(i, m, tros, mes)
+    {
+        if (vrat >= 0)
+        {
+            vraticki = vrat;
+        }
+        else
+        {
+            vraticki = 0;
+        }
+        if (poli >= 0)
+        {
+            polici = poli;
+        }
+        else
+        {
+            polici = 0;
+        }
+    }
+    float presmetajCena()
+    {
+        float cena = 0.0;
+        if (materijal)
+        {
+            cena = 4000.0;
+        }
+        else
+        {
+            cena = 2000.0;
+        }
+        cena += vraticki * 500.0;
+        cena += polici * 2000.0;
+        cena += trosok * mesec;
+        return cena;
+    }
+};
+void najevtin(Kujna **p, int N)
+{
+    Kujna *naj = p[0];
+    float najniskaCena = naj->presmetajCena();
+    for (int i = 0; i < N; i++)
+    {
+        float cena = p[i]->presmetajCena();
+        if (cena < najniskaCena)
+        {
+            naj = p[i];
+            najniskaCena = cena;
+        }
+    }
+    cout << "Najevtin kujnski element:" << endl;
+    naj->pechati();
+    cout << "Cena: " << najniskaCena << " denari" << endl;
+}
+float vkcena(Kujna **p, int n)
+{
+    float vkCena = 0.0;
+    for (int i = 0; i < n; i++)
+    {
+        vkCena += p[i]->presmetajCena();
+    }
+    return vkCena;
+}
+int main()
+{
+   Kujna *E[4];
+    float Fioki1[3] = {0.2, 0.3, 0.25};
+    Masi M1("Simpo", 0, 100, 2, 1.2, Fioki1, 3);
+    float Fioki2[4] = {0.2, 0.1, 0.15, 0.15};
+    Masi M2("Kasa Italia", 1, 120, 2, 1.5, Fioki2, 4);
+    Visacki V1("Solo Prom", 0, 150, 3, 3, 2);
+    E[0] = &M1;
+    E[1] = &M2;
+    E[2] = &V1;
+    najevtin(E, 3);
+    cout << endl;
+    cout << "Vkupnata cena na proizvodite e: " << vkcena(E, 3) << endl;
+    return 0;
+}
